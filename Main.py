@@ -1,53 +1,50 @@
-import time
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from functions import *
 
-btn_m1  = "/html/body/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/div/button[1]" 
-btn_m5  = "/html/body/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/div/button[2]"
-btn_m15 = "/html/body/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/div/button[3]"
-btn_m30 = "/html/body/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/div/button[4]"
-btn_h1  = "/html/body/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/div/button[5]"
-btn_h5  = "/html/body/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/div/button[6]"
-btn_d1  = "/html/body/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/div/button[7]"
-btn_wk  = "/html/body/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/div/button[8]"
-btn_mn  = "/html/body/div/div[2]/div/div[2]/div[1]/div[4]/div/div[1]/div/button[9]"
+import time
 
-timeframes = [btn_m1,btn_m5,btn_m15,btn_m30,btn_h1,btn_h5,btn_d1,btn_wk,btn_mn]
+# Initialize Selenium WebDriver
+options = webdriver.ChromeOptions()
+options.add_argument('--ignore-certificate-errors')
+options.add_argument('--ignore-ssl-errors')
+driver = webdriver.Chrome(options=options)
 
-#INPUTS
+# Open IEEE website
+driver.get("https://www.ieee.org/")
 
-tf_path   = btn_m1   # Enter the Desired Timeframe here
-loop_flag = True
+# //*[@id="mn-signin-link"]
 
+signin(driver)
+navigate_to_cart(driver)
 
 
-# Set up the Chrome web driver
-path = 'chromedriver.exe'
+search_society(driver,'IEEE Education Society')
+search_society(driver,'IEEE Membership')
 
-service = Service(executable_path=path)
+application_XPath = "/html/body/div[4]/div[4]/div[1]/div[1]/div[6]/div[3]/div/div[2]/div[1]/div/div/div[3]/div/ul/li/a"
 
-driver = webdriver.Chrome(service=service)
-driver.get("https://www.investing.com/currencies/eur-usd-technical")
+time.sleep(20)
+application_btn = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, application_XPath)))
+application_btn.click()
 
-while(loop_flag):
+org_name    = driver.find_element(by=By.ID,value='organization-name')
+ad1_name    = driver.find_element(by=By.ID,value='address-line1')
+ad2_name    = driver.find_element(by=By.ID,value='address-line2')
+ad3_name    = driver.find_element(by=By.ID,value='address-line3')
+city_name   = driver.find_element(by=By.ID,value='city')
+pin_name    = driver.find_element(by=By.ID,value='postal-code')
+tel_num     = driver.find_element(by=By.ID,value='postal-code')
 
-    input_element = driver.find_element(By.XPATH,tf_path)
-    input_element.click()
-    time.sleep(5)
-    message = driver.find_element(By.XPATH,"/html/body/div/div[2]/div/div[2]/div[1]/div[4]/div/div[2]/div[1]/div[2]/h2")
-    a = message.text
-    result = a.split(":")[1]
-    if result == "Buy" : 
-        print("Buying with lower TP and SL")
-    elif result == "Strong Buy":
-        print("Buying with higher TP and SL")
-    elif result == "Sell" :
-        print("Selling with lower TP and SL")
-    elif result == "Strong Sell" :
-        print("Selling with higher TP and SL")
-    else:
-        print("NONE")
-    time.sleep(10)
-    break
+org_name.send_keys("Symbiosis Institute of Technology")
+ad1_name.send_keys("Lavale near sus gaon")
+city_name.send_keys("Pune")
+pin_name.send_keys("412115")
+tel_num.send_keys("9384565379")
+
+submit_XPath = "/html/body/div[6]/div[4]/div[1]/div[1]/div[2]/div[5]/div[2]/div/div/div[2]/div/div[6]/div/div[2]/div/input"
+submit_btn   = driver.find_element(By.XPATH, submit_XPath)
+
+time.sleep(100)
