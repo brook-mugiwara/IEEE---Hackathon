@@ -48,10 +48,15 @@ def search_society(driver, input):
     result1_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, result1_XPath)))
 
     result1_button.click()
+    if input == 'IEEE Membership':
+        student_btn = driver.find_element(by=By.ID, value = "membership")
+        time.sleep(3)
+        student_btn.click()
     try:
         add_item_btn = driver.find_element(by=By.ID, value="addItems")
+        time.sleep(5)
         add_item_btn.click()
         time.sleep(20)
-        add_item_btn.click()
+        # add_item_btn.click()
     except Exception as e:
         print(e)
